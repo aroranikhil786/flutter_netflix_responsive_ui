@@ -7,16 +7,16 @@ import 'package:video_player/video_player.dart';
 class ContentHeader extends StatelessWidget {
   final Content featuredContent;
 
-  const ContentHeader({
-    Key key,
-    @required this.featuredContent,
+  ContentHeader({
+    Key? key,
+    required this.featuredContent,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Responsive(
-      mobile: _ContentHeaderMobile(featuredContent: featuredContent),
-      desktop: _ContentHeaderDesktop(featuredContent: featuredContent),
+      mobile: _ContentHeaderMobile(featuredContent: featuredContent, key: null),
+      desktop: _ContentHeaderDesktop(featuredContent: featuredContent, key: null),
     );
   }
 }
@@ -25,8 +25,8 @@ class _ContentHeaderMobile extends StatelessWidget {
   final Content featuredContent;
 
   const _ContentHeaderMobile({
-    Key key,
-    @required this.featuredContent,
+    Key? key,
+    required this.featuredContent,
   }) : super(key: key);
 
   @override
@@ -90,8 +90,8 @@ class _ContentHeaderDesktop extends StatefulWidget {
   final Content featuredContent;
 
   const _ContentHeaderDesktop({
-    Key key,
-    @required this.featuredContent,
+    Key? key,
+    required this.featuredContent,
   }) : super(key: key);
 
   @override
@@ -99,17 +99,17 @@ class _ContentHeaderDesktop extends StatefulWidget {
 }
 
 class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
-  VideoPlayerController _videoController;
+  late VideoPlayerController _videoController;
   bool _isMuted = true;
 
   @override
   void initState() {
-    super.initState();
     _videoController =
         VideoPlayerController.network(widget.featuredContent.videoUrl)
           ..initialize().then((_) => setState(() {}))
           ..setVolume(0)
           ..play();
+    super.initState();
   }
 
   @override
@@ -128,10 +128,10 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
         alignment: Alignment.bottomLeft,
         children: [
           AspectRatio(
-            aspectRatio: _videoController.value.initialized
+            aspectRatio: _videoController.value.isInitialized
                 ? _videoController.value.aspectRatio
                 : 2.344,
-            child: _videoController.value.initialized
+            child: _videoController.value.isInitialized
                 ? VideoPlayer(_videoController)
                 : Image.asset(
                     widget.featuredContent.imageUrl,
@@ -143,7 +143,7 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
             right: 0,
             bottom: -1.0,
             child: AspectRatio(
-              aspectRatio: _videoController.value.initialized
+              aspectRatio: _videoController.value.isInitialized
                   ? _videoController.value.aspectRatio
                   : 2.344,
               child: Container(
@@ -189,11 +189,11 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
                   children: [
                     _PlayButton(),
                     const SizedBox(width: 16.0),
-                    FlatButton.icon(
-                      padding:
-                          const EdgeInsets.fromLTRB(25.0, 10.0, 30.0, 10.0),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.fromLTRB(25.0, 10.0, 30.0, 10.0),
+                          iconColor: Colors.white),
                       onPressed: () => print('More Info'),
-                      color: Colors.white,
                       icon: const Icon(Icons.info_outline, size: 30.0),
                       label: const Text(
                         'More Info',
@@ -204,7 +204,7 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
                       ),
                     ),
                     const SizedBox(width: 20.0),
-                    if (_videoController.value.initialized)
+                    if (_videoController.value.isInitialized)
                       IconButton(
                         icon: Icon(
                           _isMuted ? Icons.volume_off : Icons.volume_up,
@@ -232,12 +232,14 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
 class _PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FlatButton.icon(
-      padding: !Responsive.isDesktop(context)
-          ? const EdgeInsets.fromLTRB(15.0, 5.0, 20.0, 5.0)
-          : const EdgeInsets.fromLTRB(25.0, 10.0, 30.0, 10.0),
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+          padding: !Responsive.isDesktop(context)
+              ? const EdgeInsets.fromLTRB(15.0, 5.0, 20.0, 5.0)
+              : const EdgeInsets.fromLTRB(25.0, 10.0, 30.0, 10.0),
+          iconColor: Colors.white
+      ),
       onPressed: () => print('Play'),
-      color: Colors.white,
       icon: const Icon(Icons.play_arrow, size: 30.0),
       label: const Text(
         'Play',

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 
 class Responsive extends StatelessWidget {
   final Widget mobile;
-  final Widget tablet;
   final Widget desktop;
 
   const Responsive({
-    Key key,
-    @required this.mobile,
-    this.tablet,
-    @required this.desktop,
+    Key? key,
+    required this.mobile,
+    required this.desktop,
   }) : super(key: key);
 
   static bool isMobile(BuildContext context) =>
@@ -29,7 +27,7 @@ class Responsive extends StatelessWidget {
         if (constraints.maxWidth >= 1200) {
           return desktop;
         } else if (constraints.maxWidth >= 800) {
-          return tablet ?? mobile;
+          return mobile;
         } else {
           return mobile;
         }
